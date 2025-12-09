@@ -1,35 +1,28 @@
-const productModel = require("../../models/productModel")
+const productModel = require("../../models/productModel");
 
 const filterProductController = async (req, res) => {
-    try {
-        const categoryList = req?.body?.category || []  //accessing req.body.category.  
-        // If req.body.category is undefined or null, it defaults to an empty array ([]).
+  try {
+    const categoryList = req?.body?.category || [];
 
-        const product = await productModel.find({
-            // await: Pauses the function until the database query completes.
-            category: {
-                "$in": categoryList
-            }
-            // Calls the find method on the productModel to search for 
-            // the documents in the MongoDB collection.
-        })
+    const product = await productModel.find({
+      category: {
+        $in: categoryList,
+      },
+    });
 
-        res.json({
-            // res.json: Sends a JSON response to the client.
-            data: product,
-            message: "product",
-            error: false,
-            success: true
-        })
+    res.json({
+      data: product,
+      message: "product",
+      error: false,
+      success: true,
+    });
+  } catch (err) {
+    res.json({
+      message: err.message || err,
+      error: true,
+      success: false,
+    });
+  }
+};
 
-    } catch (err) {
-        // catch (err): Catches any errors that occurred in the try block.
-        res.json({
-            message: err.message || err,
-            error: true,
-            success: false
-        })
-    }
-}
-
-module.exports = filterProductController
+module.exports = filterProductController;

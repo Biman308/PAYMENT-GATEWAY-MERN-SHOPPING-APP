@@ -81,14 +81,6 @@ const SummaryApi = {
     url: `${baseURL}/api/checkout`,
     method: "post",
   },
-  getOrder: {
-    url: `${baseURL}/api/order-list`,
-    method: "get",
-  },
-  allOrder: {
-    url: `${baseURL}/api/all-order`,
-    method: "get",
-  },
 };
 
 export default SummaryApi;
