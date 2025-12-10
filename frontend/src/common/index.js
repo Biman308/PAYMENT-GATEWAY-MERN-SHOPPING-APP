@@ -37,10 +37,10 @@ const SummaryApi = {
     url: `${baseURL}/api/update-product`,
     method: "post",
   },
-  categoryProduct: {
-    url: `${baseURL}/api/get-categoryProduct`,
-    method: "get",
-  },
+  // categoryProduct: {
+  //   url: `${baseURL}/api/get-categoryProduct`,
+  //   method: "get",
+  // },
   categoryWiseProduct: {
     url: `${baseURL}/api/category-product`,
     method: "post",
