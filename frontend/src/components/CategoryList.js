@@ -3,6 +3,7 @@ import SummaryApi from "../common";
 import { Link } from "react-router-dom";
 
 const CategoryList = () => {
+  // 1. Initialize with an empty array
   const [categoryProduct, setCategoryProduct] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -10,10 +11,24 @@ const CategoryList = () => {
 
   const fetchCategoryProduct = async () => {
     setLoading(true);
-    const response = await fetch(SummaryApi.categoryProduct.url);
-    const dataResponse = await response.json();
-    setLoading(false);
-    setCategoryProduct(dataResponse.data);
+    try {
+      const response = await fetch(SummaryApi.categoryProduct.url);
+      const dataResponse = await response.json();
+
+      setLoading(false);
+
+      // 2. DEFENSIVE CODE: Only set state if dataResponse.data actually exists
+      if (dataResponse.data) {
+        setCategoryProduct(dataResponse.data);
+      } else {
+        // If API returns an error message, keep it an empty array to prevent crash
+        setCategoryProduct([]); 
+        console.error("API Error or Empty Data:", dataResponse);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Network Error:", error);
+    }
   };
 
   useEffect(() => {
@@ -32,12 +47,13 @@ const CategoryList = () => {
                 ></div>
               );
             })
-          : categoryProduct.map((product, index) => {
+          : // 3. OPTIONAL CHAINING: Add '?' before .map just in case
+            categoryProduct?.map((product, index) => {
               return (
                 <Link
                   to={"/product-category/" + product?.category}
                   className="cursor-pointer"
-                  key={product?.category}
+                  key={product?.category || index}
                 >
                   <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden p-4 bg-slate-200 flex items-center justify-center">
                     <img
