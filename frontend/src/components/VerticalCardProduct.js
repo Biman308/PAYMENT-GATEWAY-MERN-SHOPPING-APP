@@ -27,7 +27,10 @@ const VerticalCardProduct = ({ category, heading }) => {
     setLoading(false);
 
     console.log("horizontal data", categoryProduct.data);
-    setData(categoryProduct?.data);
+    
+    // --- FIX 1: Safety Fallback ---
+    // If the API fails (timeout/error), use an empty array [] instead of undefined.
+    setData(categoryProduct?.data || []); 
   };
 
   useEffect(() => {
@@ -52,12 +55,14 @@ const VerticalCardProduct = ({ category, heading }) => {
         <button
           className="bg-white shadow-md rounded-full p-1 absolute left-0 text-lg hidden md:block"
           onClick={scrollLeft}
+          style={{ zIndex: 10 }} 
         >
           <FaAngleLeft />
         </button>
         <button
           className="bg-white shadow-md rounded-full p-1 absolute right-0 text-lg hidden md:block"
           onClick={scrollRight}
+          style={{ zIndex: 10 }}
         >
           <FaAngleRight />
         </button>
@@ -65,7 +70,10 @@ const VerticalCardProduct = ({ category, heading }) => {
         {loading
           ? loadingList.map((product, index) => {
               return (
-                <div className="w-full min-w-[280px]  md:min-w-[320px] max-w-[280px] md:max-w-[320px]  bg-white rounded-sm shadow ">
+                <div
+                  key={"loading-" + index}
+                  className="w-full min-w-[280px]  md:min-w-[320px] max-w-[280px] md:max-w-[320px]  bg-white rounded-sm shadow "
+                >
                   <div className="bg-slate-200 h-48 p-4 min-w-[280px] md:min-w-[145px] flex justify-center items-center animate-pulse"></div>
                   <div className="p-4 grid gap-3">
                     <h2 className="font-medium text-base md:text-lg text-ellipsis line-clamp-1 text-black p-1 py-2 animate-pulse rounded-full bg-slate-200"></h2>
@@ -79,15 +87,19 @@ const VerticalCardProduct = ({ category, heading }) => {
                 </div>
               );
             })
-          : data.map((product, index) => {
+          : // --- FIX 2: Optional Chaining ---
+            // Added '?' before .map to prevent crash if data is missing
+            data?.map((product, index) => {
               return (
                 <Link
+                  key={product?._id || index}
                   to={"product/" + product?._id}
                   className="w-full min-w-[280px]  md:min-w-[320px] max-w-[280px] md:max-w-[320px]  bg-white rounded-sm shadow "
                 >
                   <div className="bg-slate-200 h-48 p-4 min-w-[280px] md:min-w-[145px] flex justify-center items-center">
                     <img
-                      src={product.productImage[0]}
+                      src={product?.productImage[0]}
+                      alt={product?.productName}
                       className="object-scale-down h-full hover:scale-110 transition-all mix-blend-multiply"
                     />
                   </div>
